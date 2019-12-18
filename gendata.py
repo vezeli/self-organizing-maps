@@ -36,7 +36,8 @@ class Student:
 
     def do_survay(self, questions):
         if not hasattr(self, "answer"):
-            self.answers = tuple(self._rand_answers(questions))
+            self.answers = tuple("{:.3f}".format(answer) for answer in
+                self._rand_answers(questions))
         return None
 
 
@@ -68,7 +69,7 @@ def clean_whitespace(name):
     return " ".join(name.split())
 
 
-def main():
+if __name__ == "__main__":
     questions = QUESTION_TOPICS
     with open("names.txt", "r") as _names:
         names_list = [clean_whitespace(name) for name in _names]
@@ -76,11 +77,8 @@ def main():
 
     group = Group()
     for name in names:
-        interest = random.choice(list(set(questions)-set("random")))
+        interest = random.choice(list(set(questions)-set(["rand"])))
         group.add_participant(Student(name, interest))
 
     group.make_survay(questions)
     group.export_results(questions)
-
-if __name__ == "__main__":
-    main()
