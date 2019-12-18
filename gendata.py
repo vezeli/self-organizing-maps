@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
+from itertools import chain
 import random
 
 import numpy as np
 import pandas as pd
 
-NUMPEOPLE = 30
-QUESTION_TOPICS = (
+NUM_PEOPLE = 30
+QUESTIONS = (
     "sport",
     "art",
     "science",
@@ -23,46 +24,61 @@ QUESTION_TOPICS = (
 )
 
 
-@dataclass
+@dataclass(order=True)
 class Student:
     name: str
     interest: str
 
-    def _rand_answers(self, questions):
-        switch = {self.interest: True}
-        for topic in questions:
-            limits = (0.65, 1.00) if switch.get(topic, False) else (0.00, 0.75)
-            yield random.uniform(*limits)
+    def _gen_rand_answers(self, questions):
+        """Generator for creating answers.
 
-    def do_survay(self, questions):
-        if not hasattr(self, "answer"):
-            self.answers = tuple("{:.3f}".format(answer) for answer in
-                self._rand_answers(questions))
-        return None
+        The generator uses ``random.uniform`` together with appropriate limits
+        to yield random number (answer) to yes/no questions from ``questions``.
+        Returning 0 means 'completely negative' and 1 'completely positive'
+        answer. In case the question is related to ``Student.interest`` answers
+        are favourable (this makes answering more realistic). Therefore, the
+        limits of ``random.uniform`` for favourable questions are higher than
+        the limits for other questions.
+        """ 
+        switch = {self.interest: True}
+        for question_topic in questions:
+            answer_limit = (0.65, 1.00) if switch.get(question_topic, False) else (0.00, 0.75)
+            answer = random.uniform(*answer_limit)
+            yield answer
+
+    def give_answers(self, questions):
+        fmt = "{:.2f}"
+        try:
+            if self.answer:
+                pass
+        except AttributeError:
+            self.answers = tuple(fmt.format(answer) for answer in self._gen_rand_answers(questions))
 
 
 @dataclass
 class Group:
     participants: list = field(default_factory=list)
 
-    def add_participant(self, participant):
-        self.participants.append(participant)
+    def add_participant(self, item):
+        self.participants.append(item)
 
-    def make_survay(self, questions):
+    def make_survey(self, questions):
         for participant in self.participants:
-            participant.do_survay(questions)
+            participant.give_answers(questions)
 
-    def export_results(self, questions, to_file="students.csv"):
-        with open(to_file, "w") as f:
-            f.write(self._format_output(questions))
+    def survey_results(self, questions, file_name="students.csv"):
+        with open(file_name, "w") as f:
+            _header_info = chain(("name", "interests"), questions)
+            header = self._fmt(_header_info)
+            f.write(header)
             for student in self.participants:
-                output = self._format_output((student.name, student.interest, *student.answers))
-                f.write(output)
+                row = self._fmt([student.name, student.interest, *student.answers])
+                f.write(row)
 
-    def _format_output(self, iterator):
-        csv_fields = ", ".join(str(field) for field in iterator)
-        output_line = csv_fields + "\n"
-        return output_line
+    def _fmt(self, seq):
+        fields = ", ".join(str(field) for field in seq)
+        fmt_row = fields + "\n"
+        return fmt_row
                 
 
 def clean_whitespace(name):
@@ -70,15 +86,17 @@ def clean_whitespace(name):
 
 
 if __name__ == "__main__":
-    questions = QUESTION_TOPICS
-    with open("names.txt", "r") as _names:
-        names_list = [clean_whitespace(name) for name in _names]
-    names = random.sample(names_list, NUMPEOPLE)
+    questions = QUESTIONS
+    with open("names.txt", "r") as name_list:
+        names_list = [clean_whitespace(name) for name in name_list]
+    names = random.sample(names_list, NUM_PEOPLE)
 
     group = Group()
+    # exclude "rand", i.e., no studnet can have ``interest`` "rand"
+    interests = list(set(questions)-set(["rand"]))
     for name in names:
-        interest = random.choice(list(set(questions)-set(["rand"])))
+        interest = random.choice(interests)
         group.add_participant(Student(name, interest))
 
-    group.make_survay(questions)
-    group.export_results(questions)
+    group.make_survey(questions)
+    group.survey_results(questions)
