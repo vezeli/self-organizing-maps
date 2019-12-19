@@ -76,7 +76,7 @@ class Group:
                 f.write(row)
 
     def _fmt(self, seq):
-        fields = ", ".join(str(field) for field in seq)
+        fields = ",".join(str(field) for field in seq)
         fmt_row = fields + "\n"
         return fmt_row
                 
@@ -97,6 +97,5 @@ if __name__ == "__main__":
     for name in names:
         interest = random.choice(interests)
         group.add_participant(Student(name, interest))
-
     group.make_survey(questions)
     group.survey_results(questions)
