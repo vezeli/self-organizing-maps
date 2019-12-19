@@ -1,9 +1,14 @@
 from dataclasses import dataclass, field
 from itertools import chain
+from pathlib import Path
 import random
 
 import numpy as np
 import pandas as pd
+
+PWD = Path('.')
+DATA_DIR = PWD / "data"
+NAMES_FILE = DATA_DIR / "names.txt"
 
 NUM_PEOPLE = 30
 QUESTIONS = (
@@ -66,7 +71,11 @@ class Group:
         for participant in self.participants:
             participant.give_answers(questions)
 
-    def survey_results(self, questions, file_name="students.csv"):
+    def survey_results(self, questions, file_name=None):
+        global DATA_DIR
+
+        if file_name is None:
+            file_name = DATA_DIR / "students.csv"
         with open(file_name, "w") as f:
             _header_info = chain(("name", "interests"), questions)
             header = self._fmt(_header_info)
@@ -79,7 +88,7 @@ class Group:
         fields = ",".join(str(field) for field in seq)
         fmt_row = fields + "\n"
         return fmt_row
-                
+
 
 def clean_whitespace(name):
     return " ".join(name.split())
@@ -87,7 +96,7 @@ def clean_whitespace(name):
 
 if __name__ == "__main__":
     questions = QUESTIONS
-    with open("names.txt", "r") as name_list:
+    with open(NAMES_FILE, "r") as name_list:
         names_list = [clean_whitespace(name) for name in name_list]
     names = random.sample(names_list, NUM_PEOPLE)
 
