@@ -6,7 +6,7 @@ import random
 import numpy as np
 import pandas as pd
 
-PWD = Path('.')
+PWD = Path(".")
 DATA_DIR = PWD / "data"
 NAMES_FILE = DATA_DIR / "names.txt"
 
@@ -44,10 +44,12 @@ class Student:
         are favourable (this makes answering more realistic). Therefore, the
         limits of ``random.uniform`` for favourable questions are higher than
         the limits for other questions.
-        """ 
+        """
         switch = {self.interest: True}
         for question_topic in questions:
-            answer_limit = (0.65, 1.00) if switch.get(question_topic, False) else (0.00, 0.75)
+            answer_limit = (
+                (0.65, 1.00) if switch.get(question_topic, False) else (0.00, 0.75)
+            )
             answer = random.uniform(*answer_limit)
             yield answer
 
@@ -57,7 +59,9 @@ class Student:
             if self.answer:
                 pass
         except AttributeError:
-            self.answers = tuple(fmt.format(answer) for answer in self._gen_rand_answers(questions))
+            self.answers = tuple(
+                fmt.format(answer) for answer in self._gen_rand_answers(questions)
+            )
 
 
 @dataclass
@@ -73,7 +77,6 @@ class Group:
 
     def survey_results(self, questions, file_name=None):
         global DATA_DIR
-
         if file_name is None:
             file_name = DATA_DIR / "students.csv"
         with open(file_name, "w") as f:
@@ -102,7 +105,7 @@ if __name__ == "__main__":
 
     group = Group()
     # exclude "rand", i.e., no studnet can have ``interest`` "rand"
-    interests = list(set(questions)-set(["rand"]))
+    interests = list(set(questions) - set(["rand"]))
     for name in names:
         interest = random.choice(interests)
         group.add_participant(Student(name, interest))
