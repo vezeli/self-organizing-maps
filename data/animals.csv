@@ -1,3 +1,4 @@
+# This dataset is taken from https://www.kaggle.com/agajorte/zoo-animals-extended-dataset
 animal_name,hair,feathers,eggs,milk,airborne,aquatic,predator,toothed,blackbone,breathes,venomous,fins,legs,tail,domestic,catsize,class_type
 aardvark,1,0,0,1,0,0,1,1,1,1,0,0,4,0,0,1,1
 antelope,1,0,0,1,0,0,0,1,1,1,0,0,4,1,0,1,1
