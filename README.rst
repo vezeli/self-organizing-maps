@@ -1,17 +1,19 @@
-============================================
-Examples of Using Self-Organizing Maps (SOM)
-============================================
+.. image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/vezeli/self-organizing-maps/master?filepath=notebooks
 
-In this project we use Self-Organizing Maps (SOM) as implemented in
-`minisom package`_ for unsupervised learning of artificial neural
-network.
+===========================================
+Primers of using Self-Organizing Maps (SOM)
+===========================================
 
-.. The problem to solve include finding
-.. similarities between
+To start playing immediately with the examples follow the link at
+mybinder_.
 
-..  #. physical characteristics of wild animals and insects in a zoo
-   (dataset obtained from https://www.kaggle.com/),
+.. _mybinder: https://mybinder.org/v2/gh/vezeli/self-organizing-maps/master?filepath=notebooks
 
-.. #. students interests in school (self-generated dataset).
+Self-Organizing Map (SOM) is a type of artificial neural network trained
+using unsupervised learning. It is useful for solving problems of
+dimensional reduction and simplify visualisation of complex and
+high-dimensional data. This project uses SOM implementation adopted from
+`minisom package`_.
 
 .. _minisom package: https://github.com/JustGlowing/minisom
