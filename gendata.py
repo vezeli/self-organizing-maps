@@ -21,7 +21,6 @@ QUESTIONS = (
     "sport",
     "rand",
     "science",
-    "science",
     "art",
     "rand",
     "rand",
@@ -99,6 +98,8 @@ def clean_whitespace(name):
 
 
 if __name__ == "__main__":
+    questions = QUESTIONS
+
     with open(NAMES_FILE, "r") as name_list:
         names = []
         for name in name_list:
@@ -107,7 +108,6 @@ if __name__ == "__main__":
                 names.append(clean_whitespace(name))
     names = random.sample(names, NUM_PEOPLE)
 
-    questions = QUESTIONS
     group = Group()
     # exclude "rand", i.e., no studnet can have ``interest`` "rand"
     interests = list(set(questions) - set(["rand"]))
